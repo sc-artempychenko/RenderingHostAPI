@@ -1,0 +1,24 @@
+﻿mutation CreateCustomRenderingHost($name: String!, $templateId: ID!, $parent: ID!, 
+  $language: String, $fields: [FieldValueInput!]) {
+  createItem(
+    input: {
+      name: $name
+      templateId: $templateId
+      parent: $parent
+      language: $language
+      fields: $fields
+    }
+  ) {
+    item {
+      itemId
+      name
+      path
+      fields(ownFields: true, excludeStandardFields: true) {
+        nodes {
+          name
+          value
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+﻿query GetSiteRootPath($siteName: String!) {
+  site(siteName: $siteName) {
+    rootPath
+  }
+}

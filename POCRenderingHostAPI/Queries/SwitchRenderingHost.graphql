@@ -1,0 +1,20 @@
+﻿mutation SwitchRenderingHostForSite ($fields: [FieldValueInput], $path: String) {
+  updateItem (
+    input: {
+      fields: $fields, 
+      path: $path
+    }
+  ) {
+    item {
+      itemId
+      name
+      path
+      fields(ownFields: true, excludeStandardFields: true) {
+        nodes {
+          name
+          value
+        }
+      }
+    }
+  }
+}

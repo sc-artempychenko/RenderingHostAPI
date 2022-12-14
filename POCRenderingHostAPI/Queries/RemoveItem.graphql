@@ -1,0 +1,7 @@
+﻿mutation RemoveRenderingHost($id: ID) {
+  deleteItem(input: {
+    itemId: $id
+  }) {
+    successful
+  }
+}
