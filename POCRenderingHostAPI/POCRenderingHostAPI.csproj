@@ -10,7 +10,6 @@
     <PackageReference Include="FluentAssertions" Version="6.8.0" />
     <PackageReference Include="GraphQL.Client" Version="1.0.2" />
     <PackageReference Include="IdentityModel.OidcClient" Version="2.9.0" />
-    <!--<PackageReference Include="Sitecore.Owin.Authentication.IdentityServer" Version="7.1.43" />-->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
 	    <PrivateAssets>all</PrivateAssets>
