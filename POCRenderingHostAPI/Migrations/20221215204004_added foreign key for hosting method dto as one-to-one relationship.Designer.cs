@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POCRenderingHostAPI.Data;
 
@@ -10,9 +11,11 @@ using POCRenderingHostAPI.Data;
 namespace POCRenderingHostAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221215204004_added foreign key for hosting method dto as one-to-one relationship")]
+    partial class addedforeignkeyforhostingmethoddtoasonetoonerelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,13 +24,23 @@ namespace POCRenderingHostAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("POCRenderingHostAPI.Models.DTO.RenderingHostDTO", b =>
+            modelBuilder.Entity("POCRenderingHostAPI.Models.DTO.HostingMethodDTO", b =>
                 {
                     b.Property<string>("RenderingHostId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DefinitionItemId")
+                    b.Property<string>("HostingMethod")
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RenderingHostId");
+
+                    b.ToTable("HostingMethodDTO");
+                });
+
+            modelBuilder.Entity("POCRenderingHostAPI.Models.DTO.RenderingHostDTO", b =>
+                {
+                    b.Property<string>("RenderingHostId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("EnvironmentName")
                         .HasColumnType("nvarchar(max)");
@@ -37,9 +50,6 @@ namespace POCRenderingHostAPI.Migrations
 
                     b.Property<string>("PlatformTenantName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RenderingHostHostingMethod")
-                        .HasColumnType("int");
 
                     b.Property<string>("RenderingHostUrl")
                         .HasColumnType("nvarchar(max)");
@@ -56,6 +66,22 @@ namespace POCRenderingHostAPI.Migrations
                     b.HasKey("RenderingHostId");
 
                     b.ToTable("RenderingHosts");
+                });
+
+            modelBuilder.Entity("POCRenderingHostAPI.Models.DTO.HostingMethodDTO", b =>
+                {
+                    b.HasOne("POCRenderingHostAPI.Models.DTO.RenderingHostDTO", "RenderingHost")
+                        .WithOne("RenderingHostHostingMethod")
+                        .HasForeignKey("POCRenderingHostAPI.Models.DTO.HostingMethodDTO", "RenderingHostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RenderingHost");
+                });
+
+            modelBuilder.Entity("POCRenderingHostAPI.Models.DTO.RenderingHostDTO", b =>
+                {
+                    b.Navigation("RenderingHostHostingMethod");
                 });
 #pragma warning restore 612, 618
         }

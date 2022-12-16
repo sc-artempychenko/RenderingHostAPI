@@ -19,7 +19,8 @@ namespace POCRenderingHostAPI.Services
 
         public SiteQueryRunnerService(ITokenProvider tokenProvider)
         {
-            _client = new GraphQLClient(new Uri(AppSettings.HostUrl));
+            //_client = new GraphQLClient(new Uri("https://xmc-xmcloude2ehelix-resetsprint602e-pocrenderinf45b-s.sitecore-staging.cloud/sitecore/api/authoring/graphql/v1/"));
+            _client = GraphQLClientAuth.GetClient("");
             _tokenProvider = tokenProvider;
 
             _jwtToken = _tokenProvider.RequestResourceOwnerPasswordAsync("", "").Result;
@@ -27,7 +28,7 @@ namespace POCRenderingHostAPI.Services
             HandleSecurityProtocol();
         }
 
-        public async Task<GraphQLEndpointResponse<SiteResponse>> GetSiteRoot(string siteName)
+        public async Task<GraphQLEndpointResponse<SiteResponse>> GetSiteRoot(string siteName, TokenResponse jwtToken)
         {
             if (_authorizationCounter > 1)
             {
@@ -57,9 +58,9 @@ namespace POCRenderingHostAPI.Services
                 {
                     _client.DefaultRequestHeaders.Remove("Authorization");                  
                 }
-                _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_jwtToken.AccessToken}");
+                _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {jwtToken.AccessToken}");
 
-                result = await GetSiteRoot(siteName);
+                result = await GetSiteRoot(siteName, jwtToken);
             }
 
             _authorizationCounter = 0;

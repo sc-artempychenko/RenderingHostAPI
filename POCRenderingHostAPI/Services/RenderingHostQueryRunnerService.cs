@@ -12,14 +12,14 @@ namespace POCRenderingHostAPI.Services
 {
     public class RenderingHostQueryRunnerService : IRenderingHostQueryRunnerService, IDisposable
     {
-        private readonly GraphQLClient _client;
+        private readonly GraphQLClientAuth _client;
         private readonly ITokenProvider _tokenProvider;
         private TokenResponse _jwtToken;
         private int _authorizationCounter = default;
 
         public RenderingHostQueryRunnerService(ITokenProvider tokenProvider)
         {
-            _client = new GraphQLClient(new Uri(AppSettings.HostUrl));
+            _client = new GraphQLClient(new Uri("https://xmc-xmcloude2ehelix-resetsprint602e-pocrenderinf45b-s.sitecore-staging.cloud/sitecore/api/authoring/graphql/v1/"));
             _tokenProvider = tokenProvider;
 
             _jwtToken = _tokenProvider.RequestResourceOwnerPasswordAsync("", "").Result;

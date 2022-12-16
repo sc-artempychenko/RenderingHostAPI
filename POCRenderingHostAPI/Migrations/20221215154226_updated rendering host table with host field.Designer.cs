@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POCRenderingHostAPI.Data;
 
@@ -10,9 +11,11 @@ using POCRenderingHostAPI.Data;
 namespace POCRenderingHostAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221215154226_updated rendering host table with host field")]
+    partial class updatedrenderinghosttablewithhostfield
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,9 +29,6 @@ namespace POCRenderingHostAPI.Migrations
                     b.Property<string>("RenderingHostId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DefinitionItemId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("EnvironmentName")
                         .HasColumnType("nvarchar(max)");
 
@@ -38,8 +38,8 @@ namespace POCRenderingHostAPI.Migrations
                     b.Property<string>("PlatformTenantName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RenderingHostHostingMethod")
-                        .HasColumnType("int");
+                    b.Property<string>("RenderingHostHostingMethod")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RenderingHostUrl")
                         .HasColumnType("nvarchar(max)");

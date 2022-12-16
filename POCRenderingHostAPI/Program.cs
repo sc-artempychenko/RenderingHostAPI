@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ITokenProvider, Auth0TokenProvider>();
 builder.Services.AddScoped<IRenderingHostQueryRunnerService, RenderingHostQueryRunnerService>();
 builder.Services.AddScoped<ISiteQueryRunnerService, SiteQueryRunnerService>();
-builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IRenderingHostRepository, RenderingHostRepository>();
 
 builder.Services.AddDbContext<DataContext>(options =>
 {

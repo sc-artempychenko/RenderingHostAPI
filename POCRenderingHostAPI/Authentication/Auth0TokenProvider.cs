@@ -15,7 +15,10 @@ namespace POCRenderingHostAPI.Authentication
         public Auth0TokenProvider()
         {
 
-            _config = new TokenProviderConfiguration("", "", "", "");
+            _config = new TokenProviderConfiguration("https://auth-staging-1.sitecore-staging.cloud",
+                "https://api-staging.sitecore-staging.cloud",
+                "rGrYwWdWzsNemZYQJVwdgH3lpzNXuzeL",
+                "hGbH1mYUcowpuphmbd3M9uE8gRKY0Gk2DhmYHg5M1XfUMJQHF08hhLy5bnF8hok_");
             _cache = new ConcurrentDictionary<string, TokenResponse>();
         }
 
