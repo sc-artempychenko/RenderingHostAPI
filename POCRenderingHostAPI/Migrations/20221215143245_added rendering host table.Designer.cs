@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POCRenderingHostAPI.Data;
 
@@ -10,9 +11,11 @@ using POCRenderingHostAPI.Data;
 namespace POCRenderingHostAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221215143245_added rendering host table")]
+    partial class addedrenderinghosttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,19 +26,10 @@ namespace POCRenderingHostAPI.Migrations
 
             modelBuilder.Entity("POCRenderingHostAPI.Models.DTO.RenderingHostDTO", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DefinitionItemId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("RenderingHostId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("EnvironmentName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Host")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -44,13 +38,7 @@ namespace POCRenderingHostAPI.Migrations
                     b.Property<string>("PlatformTenantName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RenderingHostHostingMethod")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RenderingHostId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RenderingHostUrl")
+                    b.Property<string>("RenderingHostHostingMethod")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RepositoryUrl")
@@ -59,13 +47,10 @@ namespace POCRenderingHostAPI.Migrations
                     b.Property<string>("SiteName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("WorkspaceId")
+                    b.Property<string>("SourceControlIntegrationName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("WorkspaceUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("RenderingHostId");
 
                     b.ToTable("RenderingHosts");
                 });

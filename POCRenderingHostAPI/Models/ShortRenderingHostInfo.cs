@@ -1,8 +1,8 @@
 ﻿namespace POCRenderingHostAPI.Models
 {
-    public class Item
+    public class ShortRenderingHostInfo
     {
-        public string Id { get; set; }
+        public string RenderingHostId { get; set; }
         public string Name { get; set; }
     }
 }
