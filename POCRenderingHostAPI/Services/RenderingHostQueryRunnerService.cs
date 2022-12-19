@@ -2,9 +2,7 @@
 using GraphQL.Client;
 using GraphQL.Common.Request;
 using GraphQL.Common.Response;
-using IdentityModel.Client;
 using Newtonsoft.Json.Linq;
-using POCRenderingHostAPI.Authentication;
 using POCRenderingHostAPI.Models;
 using System.Net;
 
@@ -12,29 +10,16 @@ namespace POCRenderingHostAPI.Services
 {
     public class RenderingHostQueryRunnerService : IRenderingHostQueryRunnerService, IDisposable
     {
-        private readonly GraphQLClientAuth _client;
-        private readonly ITokenProvider _tokenProvider;
-        private TokenResponse _jwtToken;
-        private int _authorizationCounter = default;
+        private GraphQLClient _client;
 
-        public RenderingHostQueryRunnerService(ITokenProvider tokenProvider)
+        public void SetGraphQlClient(GraphQLClient client)
         {
-            _client = new GraphQLClient(new Uri("https://xmc-xmcloude2ehelix-resetsprint602e-pocrenderinf45b-s.sitecore-staging.cloud/sitecore/api/authoring/graphql/v1/"));
-            _tokenProvider = tokenProvider;
-
-            _jwtToken = _tokenProvider.RequestResourceOwnerPasswordAsync("", "").Result;
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_jwtToken.AccessToken}");
-            HandleSecurityProtocol();
+            _client = client;
         }
 
         public async Task<GraphQLEndpointResponse<CreateItemResponse>> CreateRenderingHostDefinitionItem(string rhName, string endpointUrl, string applicationUrl, 
             string appName)
         {
-            if (_authorizationCounter > 1)
-            {
-                throw new InvalidOperationException("Authorization failed. Please check your credentials.");
-            }
-
             var query = QueryHelper.BuildQuery(Constants.CreateRHDefinitionItem);
             var request = new GraphQLRequest
             {
@@ -74,27 +59,14 @@ namespace POCRenderingHostAPI.Services
 
             if (result.Errors != null && result.Errors.Any(e => e.Message.Equals("The current user is not authorized to access this resource.")))
             {
-                _authorizationCounter++;
-                _jwtToken = await _tokenProvider.RequestResourceOwnerPasswordAsync("", "");
-                if (_client.DefaultRequestHeaders.Authorization != null)
-                {
-                    _client.DefaultRequestHeaders.Remove("Authorization");
-                }
-                _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_jwtToken.AccessToken}");
-
-                result = await CreateRenderingHostDefinitionItem(rhName, endpointUrl, applicationUrl, appName);
+                throw new UnauthorizedAccessException("Authorization failed. Please check your credentials.");
             }
-
-            _authorizationCounter = 0;
+            
             return result;
         }
 
         public async Task<GraphQLEndpointResponse<UpdateItemResponse>> SwitchRenderingHostForSite(string rhName, string appName, string rootPath)
         {
-            if (_authorizationCounter > 1)
-            {
-                throw new InvalidOperationException("Authorization failed. Please check your credentials.");
-            }
             var query = QueryHelper.BuildQuery(Constants.SwitchRenderingHost);
             var request = new GraphQLRequest
             {
@@ -121,27 +93,14 @@ namespace POCRenderingHostAPI.Services
 
             if (result.Errors != null && result.Errors.Any(e => e.Message.Equals("The current user is not authorized to access this resource.")))
             {
-                _authorizationCounter++;
-                _jwtToken = await _tokenProvider.RequestResourceOwnerPasswordAsync("", "");
-                if (_client.DefaultRequestHeaders.Authorization != null)
-                {
-                    _client.DefaultRequestHeaders.Remove("Authorization");
-                }
-                _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_jwtToken.AccessToken}");
-
-                result = await SwitchRenderingHostForSite(rhName, appName, rootPath);
+                throw new UnauthorizedAccessException("Authorization failed. Please check your credentials.");
             }
-
-            _authorizationCounter = 0;
+            
             return result;
         }
 
         public async Task<GraphQLEndpointResponse<DeleteItemResponse>> RemoveRenderingHost(string id)
         {
-            if (_authorizationCounter > 1)
-            {
-                throw new InvalidOperationException("Authorization failed. Please check your credentials.");
-            }
             var query = QueryHelper.BuildQuery(Constants.RemoveItem);
             var request = new GraphQLRequest
             {
@@ -160,18 +119,9 @@ namespace POCRenderingHostAPI.Services
 
             if (result.Errors != null && result.Errors.Any(e => e.Message.Equals("The current user is not authorized to access this resource.")))
             {
-                _authorizationCounter++;
-                _jwtToken = await _tokenProvider.RequestResourceOwnerPasswordAsync("", "");
-                if (_client.DefaultRequestHeaders.Authorization != null)
-                {
-                    _client.DefaultRequestHeaders.Remove("Authorization");
-                }
-                _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_jwtToken.AccessToken}");
-
-                result = await RemoveRenderingHost(id);
+                throw new UnauthorizedAccessException("Authorization failed. Please check your credentials.");
             }
-
-            _authorizationCounter = 0;
+            
             return result;
         }
 
