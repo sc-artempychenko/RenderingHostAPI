@@ -60,7 +60,8 @@ namespace POCRenderingHostAPI.Controllers
                     renderingHostPayload.SiteName,
                     siteData.DTO.RootPath);
 
-                if (updatedSiteGroupingWithNewRenderingHost.Errors != null && updatedSiteGroupingWithNewRenderingHost.Errors.Length > 0)
+                if (updatedSiteGroupingWithNewRenderingHost.Errors != null &&
+                    updatedSiteGroupingWithNewRenderingHost.Errors.Length > 0)
                 {
                     return BadRequest(updatedSiteGroupingWithNewRenderingHost.Errors);
                 }
@@ -79,14 +80,8 @@ namespace POCRenderingHostAPI.Controllers
         }
 
         [HttpGet("GetAllRenderingHosts")]
-        public async Task<ActionResult<List<ShortRenderingHostInfo>>> GetAllRenderingHosts()
+        public async Task<ActionResult<List<RenderingHostWithWorkspaceDTO>>> GetAllRenderingHosts()
         {
-            var client = _hostConfigurationProvider.GetGraphQlClient(_hostConfigurationProvider.HostName);
-            var token = HttpContext.Request.Headers.Authorization;
-            _hostConfigurationProvider.SetJwtToken(token);
-            _rhQueryRunner.SetGraphQlClient(client);
-            _siteQueryRunner.SetGraphQlClient(client);
-
             var result = await MatchRenderingHosts();
 
             return Ok(result);
@@ -95,11 +90,6 @@ namespace POCRenderingHostAPI.Controllers
         [HttpGet("GetRenderingHost/{id}")]
         public async Task<ActionResult<RenderingHostWithWorkspaceDTO>> GetRenderingHostById(string id)
         {
-            var client = _hostConfigurationProvider.GetGraphQlClient(_hostConfigurationProvider.HostName);
-            var token = HttpContext.Request.Headers.Authorization;
-            _hostConfigurationProvider.SetJwtToken(token);
-            _rhQueryRunner.SetGraphQlClient(client);
-            _siteQueryRunner.SetGraphQlClient(client);
             var result = await MatchRenderingHostWithWorkspace(id);
             if (result == null)
             {
@@ -153,8 +143,10 @@ namespace POCRenderingHostAPI.Controllers
                 EnvironmentName = payload.EnvironmentName,
                 RepositoryUrl = payload.RepositoryUrl,
                 RenderingHostHostingMethod = payload.RenderingHostHostingMethod,
-                RenderingHostUrl = payload.RenderingHostHostingMethod != HostingMethods.Gitpod ? payload.RenderingHostUrl : "",
-                Host = payload.Host
+                RenderingHostUrl = payload.RenderingHostUrl,
+                Host = payload.Host,
+                WorkspaceUrl = payload.WorkspaceUrl,
+                WorkspaceId = payload.WorkspaceId
             };
         }
 
@@ -172,20 +164,20 @@ namespace POCRenderingHostAPI.Controllers
             return renderingHostWithWorkspacesDto;
         }
 
-        private async Task<List<ShortRenderingHostInfo>> MatchRenderingHosts()
+        private async Task<List<RenderingHostWithWorkspaceDTO>> MatchRenderingHosts()
         {
-            var shortRenderingHostInfos = new List<ShortRenderingHostInfo>();
+            var fullRenderingHostInfos = new List<RenderingHostWithWorkspaceDTO>();
             var renderingHostDtos = await _renderingHostRepository.GetAllRenderingHosts();
 
             foreach (var renderingHostDto in renderingHostDtos)
             {
                 var renderingHostWithWorkspacesDto =
-                    MapRenderingHostDtoToShortRenderingHostInfo(renderingHostDto);
+                    MapRenderingHostToRenderingHostDto(renderingHostDto);
 
-                shortRenderingHostInfos.Add(renderingHostWithWorkspacesDto);
+                fullRenderingHostInfos.Add(renderingHostWithWorkspacesDto);
             }
 
-            return shortRenderingHostInfos;
+            return fullRenderingHostInfos;
         }
 
         private RenderingHostWithWorkspaceDTO MapRenderingHostToRenderingHostDto(RenderingHostDTO dto)
@@ -197,19 +189,11 @@ namespace POCRenderingHostAPI.Controllers
                 RepositoryUrl = dto.RepositoryUrl,
                 SiteName = dto.SiteName,
                 EnvironmentName = dto.EnvironmentName,
-                PlatformTenantName = dto.PlatformTenantName,
+                RenderingHostHostingMethod = dto.RenderingHostHostingMethod,
+                Host = dto.Host,
                 RenderingHostUrl = dto.RenderingHostUrl,
                 WorkspaceUrl = dto.WorkspaceUrl,
                 WorkspaceId = dto.WorkspaceId
-            };
-        }
-
-        private ShortRenderingHostInfo MapRenderingHostDtoToShortRenderingHostInfo(RenderingHostDTO dto)
-        {
-            return new ShortRenderingHostInfo()
-            {
-                RenderingHostId = dto.RenderingHostId,
-                Name = dto.Name
             };
         }
     }

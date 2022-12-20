@@ -35,7 +35,7 @@ namespace POCRenderingHostAPI.Services
                             new
                             {
                                 name = "ServerSideRenderingEngineEndpointUrl",
-                                value = endpointUrl
+                                value = $"{endpointUrl}api/editing/render"
                             },
                             new
                             {
