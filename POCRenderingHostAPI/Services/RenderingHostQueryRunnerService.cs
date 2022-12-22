@@ -4,7 +4,6 @@ using GraphQL.Common.Request;
 using GraphQL.Common.Response;
 using Newtonsoft.Json.Linq;
 using POCRenderingHostAPI.Models;
-using System.Net;
 
 namespace POCRenderingHostAPI.Services
 {
@@ -127,15 +126,7 @@ namespace POCRenderingHostAPI.Services
 
         public void Dispose()
         {
-            _client.Dispose();
-        }
-
-        private void HandleSecurityProtocol()
-        {
-            if (ServicePointManager.SecurityProtocol != SecurityProtocolType.SystemDefault)
-            {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            }
+            _client?.Dispose();
         }
 
         private async Task<GraphQLEndpointResponse<T>> ExecutePostQuery<T>(GraphQLRequest request, string fieldName)

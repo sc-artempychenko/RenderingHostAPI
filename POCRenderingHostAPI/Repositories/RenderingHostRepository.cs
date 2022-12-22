@@ -25,9 +25,9 @@ namespace POCRenderingHostAPI.Repositories
             return await _dataContext.RenderingHosts.ToListAsync();
         }
 
-        public async Task<RenderingHostDTO> GetRenderingHostById(string id)
+        public async Task<RenderingHostDTO> GetRenderingHostById(int id)
         {
-            return await _dataContext.RenderingHosts.FirstOrDefaultAsync(host => host!.RenderingHostId.Equals(id));
+            return await _dataContext.RenderingHosts.FirstOrDefaultAsync(host => host!.Id == id);
         }
 
         public async Task RemoveRenderingHost(RenderingHostDTO renderingHost)

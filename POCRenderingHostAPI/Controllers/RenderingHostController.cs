@@ -70,6 +70,10 @@ namespace POCRenderingHostAPI.Controllers
             {
                 return Unauthorized(ex.Message);
             }
+            catch (HttpRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             var renderingHostDto = PayloadToDto(renderingHostPayload);
             renderingHostDto.DefinitionItemId = createdRhDefinitionItemData.DTO.Item.ItemId;
@@ -90,7 +94,13 @@ namespace POCRenderingHostAPI.Controllers
         [HttpGet("GetRenderingHost/{id}")]
         public async Task<ActionResult<RenderingHostWithWorkspaceDTO>> GetRenderingHostById(string id)
         {
-            var result = await MatchRenderingHostWithWorkspace(id);
+            var parsingResult = int.TryParse(id, out var hostId);
+            if (!parsingResult)
+            {
+                return BadRequest($"{id} is not valid id.");
+            }
+
+            var result = await MatchRenderingHostWithWorkspace(hostId);
             if (result == null)
             {
                 return NotFound();
@@ -102,7 +112,13 @@ namespace POCRenderingHostAPI.Controllers
         [HttpDelete("RemoveRenderingHost/{id}")]
         public async Task<IActionResult> RemoveById(string id)
         {
-            var renderingHostToRemove = await _renderingHostRepository.GetRenderingHostById(id);
+            var result = int.TryParse(id, out var hostId);
+            if (!result)
+            {
+                return BadRequest($"{id} is not valid id.");
+            }
+
+            var renderingHostToRemove = await _renderingHostRepository.GetRenderingHostById(hostId);
 
             if (renderingHostToRemove == null)
             {
@@ -127,6 +143,10 @@ namespace POCRenderingHostAPI.Controllers
             {
                 return Unauthorized(ex.Message);
             }
+            catch (HttpRequestException)
+            {
+                
+            }
 
             await _renderingHostRepository.RemoveRenderingHost(renderingHostToRemove);
 
@@ -137,7 +157,6 @@ namespace POCRenderingHostAPI.Controllers
         {
             return new RenderingHostDTO
             {
-                RenderingHostId = payload.Id,
                 Name = payload.Name,
                 SiteName = payload.SiteName,
                 EnvironmentName = payload.EnvironmentName,
@@ -150,7 +169,7 @@ namespace POCRenderingHostAPI.Controllers
             };
         }
 
-        private async Task<RenderingHostWithWorkspaceDTO> MatchRenderingHostWithWorkspace(string id)
+        private async Task<RenderingHostWithWorkspaceDTO> MatchRenderingHostWithWorkspace(int id)
         {
             var renderingHostDto = await _renderingHostRepository.GetRenderingHostById(id);
             if (renderingHostDto == null)
@@ -184,7 +203,7 @@ namespace POCRenderingHostAPI.Controllers
         {
             return new RenderingHostWithWorkspaceDTO()
             {
-                RenderingHostId = dto.RenderingHostId,
+                Id = dto.Id,
                 Name = dto.Name,
                 RepositoryUrl = dto.RepositoryUrl,
                 SiteName = dto.SiteName,

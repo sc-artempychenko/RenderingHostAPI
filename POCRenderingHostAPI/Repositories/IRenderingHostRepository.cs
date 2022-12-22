@@ -6,6 +6,6 @@ public interface IRenderingHostRepository
 {
     Task AddRenderingHost(RenderingHostDTO renderingHost);
     Task<List<RenderingHostDTO>> GetAllRenderingHosts();
-    Task<RenderingHostDTO> GetRenderingHostById(string id);
+    Task<RenderingHostDTO> GetRenderingHostById(int id);
     Task RemoveRenderingHost(RenderingHostDTO renderingHost);
 }
