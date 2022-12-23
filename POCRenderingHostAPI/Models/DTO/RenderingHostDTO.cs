@@ -6,11 +6,9 @@ namespace POCRenderingHostAPI.Models.DTO
     {
         [Key]
         public int Id { get; set; }
-        public string RenderingHostId { get; set; }
         public string Name { get; set; }
         public string SiteName { get; set; }
         public string RepositoryUrl { get; set; }
-        public string PlatformTenantName { get; set; }
         public string EnvironmentName { get; set; }
         public HostingMethods RenderingHostHostingMethod { get; set; }
         public string RenderingHostUrl { get; set; }

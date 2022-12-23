@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POCRenderingHostAPI.Data;
 
@@ -10,9 +11,11 @@ using POCRenderingHostAPI.Data;
 namespace POCRenderingHostAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221219124221_removed platform tenant name")]
+    partial class removedplatformtenantname
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,6 +46,9 @@ namespace POCRenderingHostAPI.Migrations
 
                     b.Property<int>("RenderingHostHostingMethod")
                         .HasColumnType("int");
+
+                    b.Property<string>("RenderingHostId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RenderingHostUrl")
                         .HasColumnType("nvarchar(max)");

@@ -2,8 +2,6 @@
 {
     public class CreateRenderingHostPayload
     {
-        public string Id { get; set; }
-        
         public HostingMethods RenderingHostHostingMethod { get; set; }
         
         public string Name { get; set; }
